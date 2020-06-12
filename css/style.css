@@ -167,7 +167,12 @@ div {
   color: #888; }
 
 .post {
-  padding: 25px 0 15px; }
+  border-style: solid;
+  border-width: 1px;
+  border-color: #eee7e7;
+  border-radius: 6px;
+  padding: 25px 10px 25px 10px;
+  margin-bottom: 20px; }
   .post .post-title {
     margin: 0;
     color: #555;
@@ -1521,3 +1526,18 @@ em.search-keyword {
   color: #fff;
   background-color: #999999;
   text-shadow: 0; }
+
+.stoc-article {
+  padding: 0.7em 0.7em 0 0; }
+
+#stoc {
+  line-height: 1em; }
+  #stoc .toc {
+    padding: 0;
+    margin: 0.5em;
+    line-height: 1.8em; }
+    #stoc .toc li {
+      list-style-type: none; }
+  #stoc .toc-child {
+    margin-left: 1em;
+    padding-left: 0; }
