@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="悦我所得, 享我所有"><title>Gradle 相关 (一) | BUG君</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Gradle 相关 (一)</h1><a id="logo" href="/.">BUG君</a><p class="description">悦我所得, 享我所有</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa undefined"> 博客</i></a><a href="/archives/"><i class="fa undefined"> 归档</i></a><a href="/about/"><i class="fa undefined"> 关于</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Gradle 相关 (一)</h1><div class="post-meta">2020-06-22<span> | </span><span class="category"><a href="/categories/%E8%BE%85%E5%8A%A9%E5%B7%A5%E5%85%B7/">辅助工具</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2020/06/22/Gradle%20%E7%9B%B8%E5%85%B3%20(%E4%B8%80)/#vcomment"><span class="valine-comment-count" data-xid="/2020/06/22/Gradle%20%E7%9B%B8%E5%85%B3%20(%E4%B8%80)/"></span><span> 条评论</span></a><div class="post-content"><p>本篇博客是在学习 <code>gradle</code> 相关知识时简要的记录了一下 <code>gradle</code> 的一些注意事项, 记录的内容比较简单, 主要是为了给自己提供一个思路, 平时在开发过程中如果忘记了, 打开看一下有个印象, 具体的一些细节问题如果记不起了可以百度查找</p>
+<h4 id="dependOn-和-mustRunAfter-的区别"><a href="#dependOn-和-mustRunAfter-的区别" class="headerlink" title="dependOn 和 mustRunAfter 的区别"></a><code>dependOn</code> 和 <code>mustRunAfter</code> 的区别</h4><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Task A = tasks.create(<span class="string">'A'</span>)</span><br><span class="line">Task B = tasks.create(<span class="string">'B'</span>)</span><br><span class="line">B.dependOn(A)</span><br><span class="line">B.mustRunAfter A</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>dependOn</code> - 设置任务的依赖关系, 当执行任务B时一定会先执行A</li>
+<li><code>mustRunAfter</code> - 设置任务的排序, 当执行任务B时不需要执行任务A, 但是当任务A和任务B同时执行时, 任务将在任务B之前执行</li>
+</ul>
+<h4 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h4><p>闭包就是一段代码块, 需要时还是用<code>{}</code>括起来使用, 箭头前面的表示形参, 箭头后面的表示执行语句, 闭包中的最后一行可以作为返回值返回.</p>
+<p>闭包可以作为一个方法的参数传入, 也可以作为一个方法的返回值返回, 它是连接内部函数和外部函数的一个桥梁</p>
+<p>闭包如果没有参数的话, 会隐含一个默认的参数<code>it</code>, 和 <code>this</code> 的作用类似, 代表的是传入闭包的参数.</p>
+<p>闭包中有三个属性:</p>
+<ol>
+<li>this</li>
+<li>owner</li>
+<li>delegate</li>
+</ol>
+<p>默认情况下这三个属性的值是相同的, 但是当闭包有包含关系的时候, this 指的就是当前的闭包, owner 指的是当前闭包的所有者, 也就是当前闭包的外层闭包.</p>
+<p>使用 <code>delegate</code> 可以实现闭包委托, 但是需要搭配 <code>resolveStrategy</code> 一起使用才能达到效果</p>
+<h4 id="gradle-中守护进程"><a href="#gradle-中守护进程" class="headerlink" title="gradle 中守护进程"></a><code>gradle</code> 中守护进程</h4><p><code>gradle --daemon clean</code></p>
+<p><code>gradle</code> 中有一个命令 <code>--daemon</code> 可以用来开启一个守护进程, 这个守护进程在后台运行. 在开启了守护进程后, 在<strong><em>==下一次==</em></strong>运行构建时构建速度将会变快. (第一次不会快反而会慢)</p>
+<p>注意点:</p>
+<ol>
+<li>守护进程只会被创建一次</li>
+<li>守护进程会在3小时空闲时间之后自动失效</li>
+<li>如果先要重新启动守护进程, 在构建时需要再次加上 <code>--daemon</code></li>
+</ol>
+<h4 id="gradle-构建块"><a href="#gradle-构建块" class="headerlink" title="gradle 构建块"></a><code>gradle</code> 构建块</h4><p>每个 <code>gradle</code> 构建都包含了三个基本的构建块: project, task, property</p>
+<p>每个构建至少包含一个 <code>project</code>, 可以包含一个或者多个<code>task</code></p>
+<p><code>project</code> 和 <code>task</code> 暴露的属性可以用来控制构建</p>
+<h4 id="属性扩展"><a href="#属性扩展" class="headerlink" title="属性扩展"></a>属性扩展</h4><p>使用<code>ext{}</code> 可以为 <code>projet</code> 增加额外属性</p>
+<p>可以在 <code>gradle.properties</code> 文件中添加 <code>gradle</code> 属性, 在这里定义的属性对所有的 <code>project</code> 可见, 即在所有的 <code>module</code> 中都可以获取到这里定义的属性</p>
+<h4 id="gradle-构建的生命周期"><a href="#gradle-构建的生命周期" class="headerlink" title="gradle 构建的生命周期"></a>gradle 构建的生命周期</h4><ol>
+<li><p>初始化阶段</p>
+<p>初始化阶段 <code>gradle</code> 会去执行 <code>settings.gradle</code>  文件读取要构建项目包含那些<code>module</code></p>
+</li>
+<li><p>配置阶段</p>
+<p>配置阶段 <code>gradle</code> 会遍历所有的 <code>moudle</code>, 梳理所有的 <code>task</code></p>
+</li>
+<li><p>执行阶段</p>
+<p>执行阶段按照 <code>task</code> 正确的顺序依次执行</p>
+</li>
+</ol>
+<p>我们可以在 ==初始化阶段== 和 ==配置阶段== 直接做一些操作, 也可以在 ==配置阶段== 和 ==执行阶段== 做一些操作</p>
+<h4 id="增量编译"><a href="#增量编译" class="headerlink" title="增量编译"></a>增量编译</h4><p><code>gradle</code> 会通过比较某个任务的两次构建 <code>task</code> 的 <code>inputs</code> 和 <code>outputs</code> 来决定是否执行 <code>task</code>,  <code>gradle</code> 会在本地生成快照, 如果两次的 <code>inputs</code> 和 <code>outputs</code> 都一样, 就会将任务的状态设置成 <code>UP-TO-DATE</code>, 任务就不会被执行</p>
+<h4 id="gradle-命令缩写"><a href="#gradle-命令缩写" class="headerlink" title="gradle  命令缩写"></a><code>gradle</code>  命令缩写</h4><p>如果一个 <code>task</code> 的定义是遵循驼峰命名的, 那么我们在使用命令行的时候就可以使用所写的方式</p>
+<p>eg: 使用 <code>gradle helloWorld</code>  运行一个 <code>task</code> 名称为 <code>helloWorld</code> 的任务, 我们可以简写为 <code>gradle hW</code> , 但是要保证的是 <code>task</code> 的名称是唯一的</p>
+<h4 id="gradle-中的依赖关键字"><a href="#gradle-中的依赖关键字" class="headerlink" title="gradle 中的依赖关键字"></a><code>gradle</code> 中的依赖关键字</h4><ol>
+<li><p>api</p>
+<p>该依赖方式会传递所有的依赖库, 当其他 <code>module</code> 依赖了该 <code>module</code> 时, 可以使用该 <code>module</code> 下通过 <code>api</code> 需依赖的库</p>
+</li>
+<li><p>implementation</p>
+<p>该依赖方式所依赖的库不会传递, 只会在当前 <code>module</code> 中生效</p>
+</li>
+<li><p>compileOnly (对应之前的 provided)</p>
+<p>该依赖只在编译时有效 ,  不会参与打包 </p>
+<p>可以在自己的 <code>moudle</code> 中依赖一些常用的库, 比如 <code>gson</code> <code>okhttp</code> 等, 这样可以避免多个 <code>module</code> 使用同一个依赖库的不同版本而导致的依赖冲突问题</p>
+</li>
+<li><p>runtimeOnly (对应之前的 apk)</p>
+<p>只在生成 <code>apk</code> 的时候参与打包, 编译时不会参与, 很少使用到</p>
+</li>
+<li><p>testImplementation </p>
+<p>只在单元测试代码的编译以及最终打包测试 <code>apk</code> 时有效</p>
+</li>
+<li><p>debugImplementation</p>
+<p>只在 <code>debug</code> 模式的编译和最终的 <code>debug apk</code> 打包时有效</p>
+</li>
+<li><p>releaseImplementation</p>
+<p>只在 <code>release</code> 模式的编译和最终 <code>release apk</code> 打包时有效</p>
+</li>
+</ol>
+</div><div id="donate"><link rel="stylesheet" type="text/css" href="/css/donate.css"><script type="text/javascript" src="/js/donate.js" successtext="复制成功!"></script><a class="pos-f tr3" id="github" href="https://github.com/Kaiyuan/donate-page" target="_blank" rel="noopener" arget="_blank" title="Github"></a><div id="DonateText">Donate</div><ul class="list pos-f" id="donateBox"><li id="AliPay" qr="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfpx4o0yhmj30gw0h40yc.jpg"></li><li id="WeChat" qr="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfpx5fex5qj30gi0gm0ys.jpg"></li></ul><div class="pos-f left-100" id="QRBox"><div id="MainBox"></div></div></div><div class="tags"></div><div class="post-nav"><a class="next" href="/2020/06/12/cmd/">常用命令行记录</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'true' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'0LiI9JoE6e1kM5WlwDrJjq9y-gzGzoHsz',
+  appKey:'5E6y6OKPq13rNzcdI3QzTQ33',
+  placeholder:'不想说点什么吗?',
+  avatar:'mm',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://xiaoxincoder.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BE%85%E5%8A%A9%E5%B7%A5%E5%85%B7/">辅助工具</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/06/22/Gradle%20%E7%9B%B8%E5%85%B3%20(%E4%B8%80)/">Gradle 相关 (一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/12/cmd/">常用命令行记录</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">BUG君.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/love.js"></script><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
