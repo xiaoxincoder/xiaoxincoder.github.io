@@ -1,0 +1,94 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="悦我所得, 享我所有"><title>android gradle 之 signingConfigs | BUG君</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">android gradle 之 signingConfigs</h1><a id="logo" href="/.">BUG君</a><p class="description">悦我所得, 享我所有</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa undefined"> 博客</i></a><a href="/archives/"><i class="fa undefined"> 归档</i></a><a href="/about/"><i class="fa undefined"> 关于</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">android gradle 之 signingConfigs</h1><div class="post-meta">2020-06-25<span> | </span><span class="category"><a href="/categories/gradle/">gradle</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2020/06/25/android-gradle-%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3-%E4%B8%80/#vcomment"><span class="valine-comment-count" data-xid="/2020/06/25/android-gradle-%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3-%E4%B8%80/"></span><span> 条评论</span></a><div class="post-content"><p><code>signingConfigs</code> 是用来配置签名的信息, 该方法的参数为 <code>NamedDomainObjectContainer&lt;SigningConfig&gt;</code></p>
+<p>被 <code>NamedDomainObjectContainer&lt;T&gt;</code> 修饰的变量, 当我们在 <code>gradle</code> 中配置内容时, 我们可以定义一个代码块, 代码块的名字就是一个类名, 该类名会继承自T</p>
+<p>当定义 <code>signingConfings</code> 时, 可以在 <code>signingConfings</code> 下面定义一个代码块, 名字可以随便写, 但是做好是定义一个有意义的名字</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">    signingConfigs &#123;</span><br><span class="line">        config &#123;</span><br><span class="line">            keyAlias <span class="string">'*****'</span></span><br><span class="line">            keyPassword <span class="string">'*****'</span></span><br><span class="line">            storeFile <span class="keyword">file</span>(<span class="string">'../keystore/BBGKeyStore(*****).keystore'</span>)</span><br><span class="line">            storePassword <span class="string">'*****'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">		...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>或者可以根据不同的包定义不同的签名信息</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">    signingConfigs &#123;</span><br><span class="line">        release &#123;</span><br><span class="line">            keyAlias <span class="string">'*****'</span></span><br><span class="line">            keyPassword <span class="string">'*****'</span></span><br><span class="line">            storeFile <span class="keyword">file</span>(<span class="string">'../keystore/BBGKeyStore(*****).keystore'</span>)</span><br><span class="line">            storePassword <span class="string">'*****'</span></span><br><span class="line">        &#125;</span><br><span class="line">        debug &#123;</span><br><span class="line">            keyAlias <span class="string">'*****'</span></span><br><span class="line">            keyPassword <span class="string">'*****'</span></span><br><span class="line">            storeFile <span class="keyword">file</span>(<span class="string">'../keystore/BBGKeyStore(*****).keystore'</span>)</span><br><span class="line">            storePassword <span class="string">'*****'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">		...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的 <code>release</code> 和  <code>debug</code> 都是 <code>SigningConfig</code> 的扩展类, <code>SigningConfig</code> 又继承自 <code>DefaultSigningConfig</code>, 支持的属性如下:</p>
+<table>
+<thead>
+<tr>
+<th align="center">属性</th>
+<th align="center">默认值</th>
+<th align="center">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">keyAlias</td>
+<td align="center">-</td>
+<td align="center">签名别名</td>
+</tr>
+<tr>
+<td align="center">keyPassword</td>
+<td align="center">-</td>
+<td align="center">签名的密码</td>
+</tr>
+<tr>
+<td align="center">storeFile</td>
+<td align="center">-</td>
+<td align="center">签名文件的路径</td>
+</tr>
+<tr>
+<td align="center">storePassword</td>
+<td align="center">-</td>
+<td align="center">签名文件的密码</td>
+</tr>
+<tr>
+<td align="center">storeType</td>
+<td align="center">jks</td>
+<td align="center">签名类型</td>
+</tr>
+<tr>
+<td align="center">v1SigningEnabled</td>
+<td align="center">true</td>
+<td align="center">是否支持v1签名</td>
+</tr>
+<tr>
+<td align="center">v2SigningEnabled</td>
+<td align="center">true</td>
+<td align="center">是否支持v1签名</td>
+</tr>
+</tbody></table>
+<ol>
+<li><h4 id="keyPassword-和-storePassword"><a href="#keyPassword-和-storePassword" class="headerlink" title="keyPassword 和 storePassword"></a><code>keyPassword</code> 和 <code>storePassword</code></h4><p>一般情况下都会将这两个密码设置为同一个</p>
+</li>
+<li><p>签名后的 <code>apk</code>文件</p>
+<p>签名后的 <code>apk</code> 文件中会出现一个文件夹<code>META-INF</code>, 该文件夹中包含了三个部分:</p>
+<ol>
+<li><p>MANIFEST.MF</p>
+<p>该文件中保存的内容就是逐一遍历 <code>apk</code> 中所有的条目, 如果是目录就跳过, 如果是文件, 就是用<code>SHA1</code> 或者 <code>SHA256</code> 消息摘要算法提取出该文件的摘要然后通过 <code>BASE64</code> 编码后, 作为“SHA1-Digest”属性的值写入到 MANIFEST.MF 文件中的一个块中.</p>
+</li>
+<li><p>CERT.SF</p>
+<ul>
+<li>SHA1-Digest-Manifest-Main-Attributes：对 MANIFEST.MF 头部的块做 SHA1（或者SHA256）后再用 Base64 编码</li>
+<li>SHA1-Digest-Manifest：对整个 MANIFEST.MF 文件做 SHA1（或者 SHA256）后再用 Base64 编码</li>
+<li>SHA1-Digest：对 MANIFEST.MF 的各个条目做 SHA1（或者 SHA256）后再用 Base64 编码</li>
+</ul>
+</li>
+<li><p>CERT.RSA</p>
+<p>把之前生成的 <code>CREF.SF</code> 文件, 用私钥计算出签名, 然后将签名以及包含公钥信息的数字证书一同写入 <code>CERF-RSA</code> 文件中保存.</p>
+</li>
+</ol>
+</li>
+</ol>
+<pre><code>&lt;img src=&quot;/Users/xinxin/Desktop/截屏2020-06-25 上午11.09.27.png&quot; alt=&quot;签名过程&quot; style=&quot;zoom:50%;&quot; /&gt;</code></pre></div><div id="donate"><link rel="stylesheet" type="text/css" href="/css/donate.css"><script type="text/javascript" src="/js/donate.js" successtext="复制成功!"></script><a class="pos-f tr3" id="github" href="https://github.com/Kaiyuan/donate-page" target="_blank" rel="noopener" arget="_blank" title="Github"></a><div id="DonateText">Donate</div><ul class="list pos-f" id="donateBox"><li id="AliPay" qr="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfpx4o0yhmj30gw0h40yc.jpg"></li><li id="WeChat" qr="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfpx5fex5qj30gi0gm0ys.jpg"></li></ul><div class="pos-f left-100" id="QRBox"><div id="MainBox"></div></div></div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2020/06/25/android-gradle-%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3-%E4%BA%8C/">android gradle 之 defaultConfig</a><a class="next" href="/2020/06/24/android-gradle-%E6%8F%92%E4%BB%B6/">android gradle 插件</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'true' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'0LiI9JoE6e1kM5WlwDrJjq9y-gzGzoHsz',
+  appKey:'5E6y6OKPq13rNzcdI3QzTQ33',
+  placeholder:'不想说点什么吗?',
+  avatar:'mm',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://xiaoxincoder.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/gradle/">gradle</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BD%91%E7%BB%9C/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BE%85%E5%8A%A9%E5%B7%A5%E5%85%B7/">辅助工具</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/06/28/http-%E7%BC%93%E5%AD%98%E8%AF%A6%E8%A7%A3/">http 缓存详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/25/android-gradle-%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3-%E4%BA%8C/">android gradle 之 defaultConfig</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/25/android-gradle-%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3-%E4%B8%80/">android gradle 之 signingConfigs</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/24/android-gradle-%E6%8F%92%E4%BB%B6/">android gradle 插件</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/24/gradle-dsl-%E6%9E%84%E5%BB%BA%E8%84%9A%E6%9C%AC%E7%BB%93%E6%9E%84-%E4%B8%80/">gradle dsl 构建脚本结构(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/22/Gradle%20%E7%9B%B8%E5%85%B3%20(%E4%B8%80)/">Gradle 相关 (一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/12/cmd/">常用命令行记录</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">BUG君.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/love.js"></script><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="悦我所得, 享我所有"><title>gradle dsl 构建脚本结构(一) | BUG君</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">gradle dsl 构建脚本结构(一)</h1><a id="logo" href="/.">BUG君</a><p class="description">悦我所得, 享我所有</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa undefined"> 博客</i></a><a href="/archives/"><i class="fa undefined"> 归档</i></a><a href="/about/"><i class="fa undefined"> 关于</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">gradle dsl 构建脚本结构(一)</h1><div class="post-meta">2020-06-24<span> | </span><span class="category"><a href="/categories/%E8%BE%85%E5%8A%A9%E5%B7%A5%E5%85%B7/">辅助工具</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" href="/2020/06/24/gradle-dsl-%E6%9E%84%E5%BB%BA%E8%84%9A%E6%9C%AC%E7%BB%93%E6%9E%84-%E4%B8%80/#vcomment"><span class="valine-comment-count" data-xid="/2020/06/24/gradle-dsl-%E6%9E%84%E5%BB%BA%E8%84%9A%E6%9C%AC%E7%BB%93%E6%9E%84-%E4%B8%80/"></span><span> 条评论</span></a><div class="post-content"><p>DSL 指的是领域特定语言,  Android Studio 默认使用 Gradle DSL 作为脚本来构建项目</p>
+<h4 id="Gradle-DSL-构建脚本结构"><a href="#Gradle-DSL-构建脚本结构" class="headerlink" title="Gradle DSL 构建脚本结构"></a>Gradle DSL 构建脚本结构</h4><table>
+<thead>
+<tr>
+<th align="center">脚本块</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">allProjects{}</td>
+<td align="center">配置当前project和它的sub-project</td>
+</tr>
+<tr>
+<td align="center">artifacts{}</td>
+<td align="center">为当前project配置发布的一些属性</td>
+</tr>
+<tr>
+<td align="center">buildscript{}</td>
+<td align="center">为当前project配置构建脚本类路径</td>
+</tr>
+<tr>
+<td align="center">configurations{}</td>
+<td align="center">为当前project配置依赖配置项</td>
+</tr>
+<tr>
+<td align="center">dependencies{}</td>
+<td align="center">为当前project配置依赖</td>
+</tr>
+<tr>
+<td align="center">repositories{}</td>
+<td align="center">为当前project配置仓库</td>
+</tr>
+<tr>
+<td align="center">sourcesets{}</td>
+<td align="center">为当前project配置资源集合</td>
+</tr>
+<tr>
+<td align="center">subprojects{}</td>
+<td align="center">配置当前project的sub-project</td>
+</tr>
+<tr>
+<td align="center">publishing{}</td>
+<td align="center">配置发布插件所添加的PublishingExtension</td>
+</tr>
+</tbody></table>
+<ol>
+<li><h4 id="allprojects"><a href="#allprojects" class="headerlink" title="allprojects{}"></a>allprojects{}</h4><p>项目本身需要的依赖</p>
+</li>
+<li><h4 id="artifacts"><a href="#artifacts" class="headerlink" title="artifacts{}"></a>artifacts{}</h4><p>工件, 针对已经发布的依赖</p>
+</li>
+<li><h4 id="buildscript"><a href="#buildscript" class="headerlink" title="buildscript{}"></a>buildscript{}</h4><p>该脚本块定义的<code>gradle</code> 脚本执行所需依赖, 分别对应的是 <code>maven</code> 库和 <code>plugin</code> 插件</p>
+</li>
+<li><h4 id="configurations"><a href="#configurations" class="headerlink" title="configurations{}"></a>configurations{}</h4></li>
+<li><h4 id="dependencies"><a href="#dependencies" class="headerlink" title="dependencies{}"></a>dependencies{}</h4><p>配置依赖项</p>
+</li>
+<li><h4 id="repositories"><a href="#repositories" class="headerlink" title="repositories{}"></a>repositories{}</h4><p>配置仓库</p>
+</li>
+<li><h4 id="sourcesets"><a href="#sourcesets" class="headerlink" title="sourcesets{}"></a>sourcesets{}</h4></li>
+<li><h4 id="subprojects"><a href="#subprojects" class="headerlink" title="subprojects{}"></a>subprojects{}</h4><p>配置当前的project的所有子project</p>
+</li>
+<li><h4 id="publishing"><a href="#publishing" class="headerlink" title="publishing{}"></a>publishing{}</h4><p>配置一些发布相关的信息</p>
+</li>
+</ol>
+</div><div id="donate"><link rel="stylesheet" type="text/css" href="/css/donate.css"><script type="text/javascript" src="/js/donate.js" successtext="复制成功!"></script><a class="pos-f tr3" id="github" href="https://github.com/Kaiyuan/donate-page" target="_blank" rel="noopener" arget="_blank" title="Github"></a><div id="DonateText">Donate</div><ul class="list pos-f" id="donateBox"><li id="AliPay" qr="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfpx4o0yhmj30gw0h40yc.jpg"></li><li id="WeChat" qr="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfpx5fex5qj30gi0gm0ys.jpg"></li></ul><div class="pos-f left-100" id="QRBox"><div id="MainBox"></div></div></div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2020/06/24/android-gradle-%E6%8F%92%E4%BB%B6/">android gradle 插件</a><a class="next" href="/2020/06/22/Gradle%20%E7%9B%B8%E5%85%B3%20(%E4%B8%80)/">Gradle 相关 (一)</a></div><div id="vcomment"></div><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script><script>var notify = 'true' == 'true' ? true : false;
+var verify = 'false' == 'true' ? true : false;
+var GUEST_INFO = ['nick','mail','link'];
+var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+  return GUEST_INFO.indexOf(item) > -1
+});
+guest_info = guest_info.length == 0 ? GUEST_INFO :guest_info;
+window.valine = new Valine({
+  el:'#vcomment',
+  notify:notify,
+  verify:verify,
+  appId:'0LiI9JoE6e1kM5WlwDrJjq9y-gzGzoHsz',
+  appKey:'5E6y6OKPq13rNzcdI3QzTQ33',
+  placeholder:'不想说点什么吗?',
+  avatar:'mm',
+  guest_info:guest_info,
+  pageSize:'10'
+})
+</script></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://xiaoxincoder.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/gradle/">gradle</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BD%91%E7%BB%9C/">网络</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BE%85%E5%8A%A9%E5%B7%A5%E5%85%B7/">辅助工具</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/06/28/http-%E7%BC%93%E5%AD%98%E8%AF%A6%E8%A7%A3/">http 缓存详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/25/android-gradle-%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3-%E4%BA%8C/">android gradle 之 defaultConfig</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/25/android-gradle-%E9%85%8D%E7%BD%AE%E8%AF%A6%E8%A7%A3-%E4%B8%80/">android gradle 之 signingConfigs</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/24/android-gradle-%E6%8F%92%E4%BB%B6/">android gradle 插件</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/24/gradle-dsl-%E6%9E%84%E5%BB%BA%E8%84%9A%E6%9C%AC%E7%BB%93%E6%9E%84-%E4%B8%80/">gradle dsl 构建脚本结构(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/22/Gradle%20%E7%9B%B8%E5%85%B3%20(%E4%B8%80)/">Gradle 相关 (一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/12/cmd/">常用命令行记录</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2020 <a href="/." rel="nofollow">BUG君.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/love.js"></script><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
